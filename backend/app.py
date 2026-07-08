@@ -10,7 +10,7 @@ CORS(app)
 # Global variables for model and tokenizer - initially None
 model = None
 tokenizer = None
-model_name = "prithivida/grammar_error_corrector"  # Smaller model
+model_name = "vennify/t5-base-grammar-correction"
 
 def load_model():
     """Load model and tokenizer only when first needed"""
