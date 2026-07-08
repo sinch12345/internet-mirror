@@ -1,50 +1,68 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import torch
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
-import os
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 app = Flask(__name__)
 CORS(app)
 
-# Global variables for model and tokenizer - initially None
-model = None
-tokenizer = None
-model_name = "vennify/t5-base-grammar-correction"  # ✅ Working model
+analyzer = SentimentIntensityAnalyzer()
+print("VADER sentiment analyzer ready.")
 
-def load_model():
-    """Load model and tokenizer only when first needed"""
-    global model, tokenizer
-    if model is None:
-        print("Loading model... (This may take a moment)")
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
-        print("Model loaded successfully!")
-    return model, tokenizer
 
-@app.route('/correct', methods=['POST'])
-def correct_grammar():
-    try:
-        data = request.get_json()
-        text = data.get('text', '')
-        if not text:
-            return jsonify({'error': 'No text provided'}), 400
+@app.route("/analyze", methods=["POST"])
+def analyze():
+    data = request.get_json()
+    text = data.get("text", "")
 
-        # Load model lazily
-        model, tokenizer = load_model()
+    if not text.strip():
+        return jsonify({"error": "No text provided"}), 400
 
-        # Process text (adjust based on your model's requirements)
-        inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
-        outputs = model.generate(**inputs, max_length=512)
-        corrected = tokenizer.decode(outputs[0], skip_special_tokens=True)
+    chunks = [line.strip() for line in text.split("\n") if line.strip()]
+    if not chunks:
+        chunks = [text]
 
-        return jsonify({'corrected_text': corrected})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    results = []
+    positive_count = 0
+    negative_count = 0
+    total_confidence = 0
 
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'healthy'}), 200
+    for chunk in chunks:
+        scores = analyzer.polarity_scores(chunk)
+        compound = scores["compound"]
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
+        label = "POSITIVE" if compound >= 0 else "NEGATIVE"
+        if label == "POSITIVE":
+            positive_count += 1
+        else:
+            negative_count += 1
+
+        confidence = abs(compound)
+        total_confidence += confidence
+
+        results.append({"label": label, "score": round(confidence, 3), "text": chunk})
+
+    total = len(results)
+    joy_score = positive_count / total
+    anger_score = negative_count / total
+    avg_confidence = total_confidence / total
+
+    personality_vector = {
+        "joy": round(joy_score, 2),
+        "anger": round(anger_score, 2),
+        "confidence": round(avg_confidence, 2),
+        "chunks_analyzed": total
+    }
+
+    return jsonify({
+        "personality_vector": personality_vector,
+        "raw_results": results
+    })
+
+
+@app.route("/", methods=["GET"])
+def home():
+    return jsonify({"status": "Internet Mirror backend is running"})
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)
