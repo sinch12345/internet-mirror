@@ -37,3 +37,44 @@ p {
   overflow: hidden;
   background: #111;
 }
+
+#text-input {
+  width: 100%;
+  max-width: 600px;
+  height: 120px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  color: #eaeaea;
+  padding: 12px;
+  font-size: 0.95rem;
+  resize: vertical;
+  margin-bottom: 12px;
+}
+
+#analyze-btn {
+  background: linear-gradient(90deg, #7f5af0, #2cb67d);
+  border: none;
+  color: white;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+
+#analyze-btn:hover {
+  opacity: 0.85;
+}
+
+#analyze-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#status-text {
+  color: #888;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+  min-height: 20px;
+}

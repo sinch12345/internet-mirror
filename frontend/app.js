@@ -35,11 +35,13 @@ const light2 = new THREE.AmbientLight(0x404040, 1.5);
 scene.add(light2);
 
 // ---- 4. Animation loop ----
+let avatarSpinSpeed = 0.005;
+
 function animate() {
   requestAnimationFrame(animate);
 
-  avatar.rotation.x += 0.003;
-  avatar.rotation.y += 0.005;
+  avatar.rotation.x += avatarSpinSpeed * 0.6;
+  avatar.rotation.y += avatarSpinSpeed;
 
   renderer.render(scene, camera);
 }
@@ -51,3 +53,82 @@ window.addEventListener('resize', () => {
   camera.updateProjectionMatrix();
   renderer.setSize(container.clientWidth, container.clientHeight);
 });
+
+// ---- 6. Connect to backend + morph avatar ----
+const textInput = document.getElementById('text-input');
+const analyzeBtn = document.getElementById('analyze-btn');
+const statusText = document.getElementById('status-text');
+
+const BACKEND_URL = "http://127.0.0.1:5000/analyze";
+
+analyzeBtn.addEventListener('click', async () => {
+  const text = textInput.value;
+
+  if (!text.trim()) {
+    statusText.textContent = "Please paste some text first.";
+    return;
+  }
+
+  analyzeBtn.disabled = true;
+  statusText.textContent = "Analyzing...";
+
+  try {
+    const response = await fetch(BACKEND_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const vector = data.personality_vector;
+
+    statusText.textContent =
+      `Joy: ${vector.joy} | Anger: ${vector.anger} | Chunks analyzed: ${vector.chunks_analyzed}`;
+
+    morphAvatar(vector);
+
+  } catch (err) {
+    statusText.textContent = "Error connecting to backend. Is app.py running?";
+    console.error(err);
+  } finally {
+    analyzeBtn.disabled = false;
+  }
+});
+
+// ---- 7. Morph function: maps personality vector -> avatar appearance ----
+function morphAvatar(vector) {
+  // Color: blend from calm blue (low anger) to angry red (high anger)
+  const calmColor = new THREE.Color(0x2cb67d);   // green-ish calm
+  const angryColor = new THREE.Color(0xff3b3b);  // red angry
+  const mixedColor = calmColor.clone().lerp(angryColor, vector.anger);
+  avatar.material.color = mixedColor;
+
+  // Spikiness: rebuild geometry with more/less displacement based on anger
+  const detail = 1;
+  const newGeometry = new THREE.IcosahedronGeometry(1, detail);
+  const posAttr = newGeometry.attributes.position;
+
+  for (let i = 0; i < posAttr.count; i++) {
+    const x = posAttr.getX(i);
+    const y = posAttr.getY(i);
+    const z = posAttr.getZ(i);
+    const vertex = new THREE.Vector3(x, y, z);
+
+    // Push vertices outward randomly, scaled by anger score
+    const spike = 1 + (Math.random() * vector.anger * 0.6);
+    vertex.multiplyScalar(spike);
+
+    posAttr.setXYZ(i, vertex.x, vertex.y, vertex.z);
+  }
+  newGeometry.computeVertexNormals();
+
+  avatar.geometry.dispose();
+  avatar.geometry = newGeometry;
+
+  // Rotation speed: joy makes it spin faster
+  avatarSpinSpeed = 0.003 + (vector.joy * 0.02);
+}
