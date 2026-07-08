@@ -1,5 +1,9 @@
 # 🔮 The Internet Mirror
 
+
+**🔗 Live demo:** https://sinchana1234-dev.github.io/internet-mirror/  
+**⚙️ Backend API:** https://internet-mirror-backend.onrender.com
+
 A living, breathing 3D sculpture that visualizes the emotional tone of your written text — built with Three.js on the frontend and a DistilBERT sentiment model on the backend.
 
 ## What it does
@@ -11,8 +15,7 @@ Paste in a block of text (comments, posts, journal entries — one per line), an
 
 ## Demo
 
-*(Add a screenshot or GIF here once deployed — this matters a lot for recruiters skimming your repo)*
-
+![App screenshot](assets/screenshot.png)
 ## Tech Stack
 
 - **Frontend:** HTML/CSS/JavaScript + Three.js (WebGL 3D rendering)
