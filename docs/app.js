@@ -59,7 +59,7 @@ const textInput = document.getElementById('text-input');
 const analyzeBtn = document.getElementById('analyze-btn');
 const statusText = document.getElementById('status-text');
 
-const BACKEND_URL = "https://internet-mirror-backend.onrender.com/analyze";
+const BACKEND_URL = "https://internet-mirror.vercel.app/analyze";
 
 analyzeBtn.addEventListener('click', async () => {
   const text = textInput.value;
