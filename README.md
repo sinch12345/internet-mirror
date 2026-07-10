@@ -1,26 +1,37 @@
-# 🔮 The Internet Mirror
-
+# 🎯 ReviewPulse
 
 **🔗 Live demo:** https://sinchana1234-dev.github.io/internet-mirror/  
-**⚙️ Backend API:** https://internet-mirror-backend.onrender.com
+**⚙️ Backend API:** https://internet-mirror.vercel.app
 
-A living, breathing 3D sculpture that visualizes the emotional tone of your written text — built with Three.js on the frontend and a DistilBERT sentiment model on the backend.
+I help brands turn 1-star reviews into 5-star customer experiences automatically.
+
+A tool for e-commerce sellers (Amazon, Shopify, D2C brands) that analyzes customer review sentiment in real time and generates ready-to-send responses — so no review sits unanswered.
 
 ## What it does
 
-Paste in a block of text (comments, posts, journal entries — one per line), and the app:
-1. Runs each line through a sentiment analysis model
-2. Builds a "personality vector" (joy score, anger score, confidence)
-3. Morphs a 3D avatar in real time — its **color** shifts from calm green to angry red, its **surface** goes from smooth to spiky, and its **spin speed** increases with joy
+Paste in a batch of customer reviews (one per line), and the app:
+1. Runs each review through sentiment analysis
+2. Classifies it positive/negative with a confidence score
+3. Generates a suggested reply for each review, tailored to its sentiment
+4. Visualizes the overall sentiment mix via a reactive 3D avatar
 
 ## Demo
 
 ![App screenshot](assets/screenshot.png)
+
 ## Tech Stack
 
 - **Frontend:** HTML/CSS/JavaScript + Three.js (WebGL 3D rendering)
-- **Backend:** Flask (Python)
-- **AI:** HuggingFace Transformers — `distilbert-base-uncased-finetuned-sst-2-english`
+- **Backend:** Flask (Python) on Vercel
+- **Sentiment engine:** VADER (rule-based sentiment analysis)
+
+## Business Model
+
+| | |
+|---|---|
+| Target Client | Amazon sellers, Shopify store owners, D2C brands |
+| Pricing | $29/month subscription OR $199 one-time setup |
+| Value | Automates review response, protects brand reputation, saves time |
 
 ## Running locally
 
@@ -39,10 +50,11 @@ Open `frontend/index.html` with VS Code's Live Server extension (or any static f
 
 ## Why I built this
 
-To explore the intersection of machine learning and interactive visual design — turning abstract sentiment scores into something you can actually *see* change in real time, rather than a table of numbers.
+To show how sentiment analysis can be packaged into a real, sellable tool — not just a numbers table, but something that directly saves a business time and protects their reputation.
 
 ## Roadmap
 
-- [ ] Deploy live demo
-- [ ] Add more personality dimensions (sadness, technical jargon)
+- [ ] Deploy live demo with new branding
+- [ ] Editable auto-responses before sending
+- [ ] Direct integration with Amazon/Shopify review APIs
 - [ ] "Toxicity Cleaner" — AI-rewritten polite version of negative text

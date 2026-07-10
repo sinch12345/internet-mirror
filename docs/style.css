@@ -78,3 +78,72 @@ p {
   margin-bottom: 20px;
   min-height: 20px;
 }
+
+#results-section {
+  width: 100%;
+  max-width: 600px;
+  margin-top: 30px;
+}
+
+#results-section h2 {
+  font-size: 1.2rem;
+  color: #eaeaea;
+  margin-bottom: 8px;
+}
+
+#results-summary {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
+}
+
+#results-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-card {
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+
+.review-card.positive {
+  border-left: 3px solid #2cb67d;
+}
+
+.review-card.negative {
+  border-left: 3px solid #ff3b3b;
+}
+
+.review-text {
+  color: #eaeaea;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.review-meta {
+  color: #888;
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+}
+
+.review-response {
+  background: #111;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #b8b8b8;
+  font-style: italic;
+}
+
+.review-response-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7f5af0;
+  margin-bottom: 4px;
+  font-style: normal;
+}

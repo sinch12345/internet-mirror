@@ -59,13 +59,12 @@ const textInput = document.getElementById('text-input');
 const analyzeBtn = document.getElementById('analyze-btn');
 const statusText = document.getElementById('status-text');
 
-const BACKEND_URL = "https://internet-mirror.vercel.app/analyze";
-
+const BACKEND_URL = "https://your-new-vercel-url.vercel.app/analyze";
 analyzeBtn.addEventListener('click', async () => {
   const text = textInput.value;
 
   if (!text.trim()) {
-    statusText.textContent = "Please paste some text first.";
+    statusText.textContent = "Please paste some reviews first.";
     return;
   }
 
@@ -87,9 +86,10 @@ analyzeBtn.addEventListener('click', async () => {
     const vector = data.personality_vector;
 
     statusText.textContent =
-      `Joy: ${vector.joy} | Anger: ${vector.anger} | Chunks analyzed: ${vector.chunks_analyzed}`;
+      `Joy: ${vector.joy} | Anger: ${vector.anger} | Reviews analyzed: ${vector.chunks_analyzed}`;
 
     morphAvatar(vector);
+    renderResults(vector, data.raw_results);   // NEW
 
   } catch (err) {
     statusText.textContent = "Error connecting to backend. Is app.py running?";
@@ -99,6 +99,40 @@ analyzeBtn.addEventListener('click', async () => {
   }
 });
 
+// ---- NEW: render review cards with sentiment + auto-response ----
+function renderResults(vector, results) {
+  const summaryEl = document.getElementById('results-summary');
+  const listEl = document.getElementById('results-list');
+
+  const positiveCount = results.filter(r => r.label === "POSITIVE").length;
+  const negativeCount = results.filter(r => r.label === "NEGATIVE").length;
+
+  summaryEl.textContent =
+    `${results.length} reviews analyzed — ${positiveCount} positive, ${negativeCount} negative.`;
+
+  listEl.innerHTML = "";
+
+  results.forEach(r => {
+    const card = document.createElement('div');
+    card.className = `review-card ${r.label.toLowerCase()}`;
+
+    card.innerHTML = `
+      <div class="review-text">"${escapeHtml(r.text)}"</div>
+      <div class="review-meta">${r.label} · confidence ${r.score}</div>
+      <div class="review-response-label">Suggested reply</div>
+      <div class="review-response">${escapeHtml(r.response)}</div>
+    `;
+
+    listEl.appendChild(card);
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+// ---- end new section ----
 // ---- 7. Morph function: maps personality vector -> avatar appearance ----
 function morphAvatar(vector) {
   // Color: blend from calm blue (low anger) to angry red (high anger)

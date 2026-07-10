@@ -1,10 +1,3 @@
-blinker
-click
-colorama
-Flask
-Flask-Cors
-itsdangerous
-Jinja2
-MarkupSafe
+flask
+flask-cors
 vaderSentiment
-Werkzeug

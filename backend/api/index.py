@@ -1,12 +1,32 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+import random
 
 app = Flask(__name__)
 CORS(app)
 
 analyzer = SentimentIntensityAnalyzer()
-print("VADER sentiment analyzer ready.")
+
+# ---- Auto-response templates ----
+POSITIVE_RESPONSES = [
+    "Thank you so much for the kind words! We're thrilled you had a great experience — hope to see you again soon. 🙌",
+    "This made our day! Thanks for taking the time to share your feedback. 😊",
+    "We really appreciate you! Glad we could deliver a great experience for you.",
+]
+
+NEGATIVE_RESPONSES = [
+    "We're really sorry to hear this. This isn't the experience we want for you — please reach out to our support team so we can make it right.",
+    "Thank you for flagging this, and we apologize for the trouble. We're looking into it and would love the chance to fix things for you.",
+    "We're sorry this fell short of expectations. Please DM us your order details so we can resolve this quickly.",
+]
+
+
+def generate_response(label):
+    if label == "POSITIVE":
+        return random.choice(POSITIVE_RESPONSES)
+    else:
+        return random.choice(NEGATIVE_RESPONSES)
 
 
 @app.route("/analyze", methods=["POST"])
@@ -39,7 +59,12 @@ def analyze():
         confidence = abs(compound)
         total_confidence += confidence
 
-        results.append({"label": label, "score": round(confidence, 3), "text": chunk})
+        results.append({
+            "label": label,
+            "score": round(confidence, 3),
+            "text": chunk,
+            "response": generate_response(label)
+        })
 
     total = len(results)
     joy_score = positive_count / total
@@ -61,8 +86,4 @@ def analyze():
 
 @app.route("/", methods=["GET"])
 def home():
-    return jsonify({"status": "Internet Mirror backend is running"})
-
-
-if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    return jsonify({"status": "ReviewPulse backend is running"})

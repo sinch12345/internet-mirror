@@ -2,19 +2,24 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>The Internet Mirror</title>
+  <title>ReviewPulse — Turn 1-Star Reviews Into 5-Star Experiences</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>The Internet Mirror</h1>
-  <p>Paste some of your comments/posts below — one per line — and watch your avatar react.</p>
+  <h1>ReviewPulse</h1>
+   <p>Paste your customer reviews below — one per line — and get instant sentiment analysis + ready-to-send responses.</p>
 
-  <textarea id="text-input" placeholder="Paste your comments here, one per line..."></textarea>
-  <button id="analyze-btn">Analyze</button>
+  <textarea id="text-input" placeholder="Paste customer reviews here, one per line..."></textarea>
+<button id="analyze-btn">Analyze Reviews</button>
   <p id="status-text"></p>
 
   <div id="canvas-container"></div>
 
+  <div id="results-section">
+  <h2>Review Breakdown</h2>
+  <p id="results-summary"></p>
+  <div id="results-list"></div>
+</div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="app.js"></script>
 </body>
