@@ -104,12 +104,40 @@ analyzeBtn.addEventListener('click', async () => {
 function renderResults(vector, results) {
   const summaryEl = document.getElementById('results-summary');
   const listEl = document.getElementById('results-list');
+  const scoreNumberEl = document.getElementById('score-number');
+  const complaintsListEl = document.getElementById('complaints-list');
 
   const positiveCount = results.filter(r => r.label === "POSITIVE").length;
   const negativeCount = results.filter(r => r.label === "NEGATIVE").length;
 
   summaryEl.textContent =
     `${results.length} reviews analyzed — ${positiveCount} positive, ${negativeCount} negative.`;
+
+  // NEW: satisfaction score
+  scoreNumberEl.textContent = vector.satisfaction_score;
+  if (vector.satisfaction_score >= 70) {
+    scoreNumberEl.style.color = "#2cb67d";
+  } else if (vector.satisfaction_score >= 40) {
+    scoreNumberEl.style.color = "#f5a623";
+  } else {
+    scoreNumberEl.style.color = "#ff3b3b";
+  }
+
+  // NEW: top complaints
+  complaintsListEl.innerHTML = "";
+  if (vector.top_complaints && vector.top_complaints.length > 0) {
+    vector.top_complaints.forEach(c => {
+      const tag = document.createElement('span');
+      tag.className = 'complaint-tag';
+      tag.textContent = `${c.category} (${c.count})`;
+      complaintsListEl.appendChild(tag);
+    });
+  } else {
+    const noComplaints = document.createElement('span');
+    noComplaints.className = 'no-complaints';
+    noComplaints.textContent = 'No major complaint patterns found 🎉';
+    complaintsListEl.appendChild(noComplaints);
+  }
 
   listEl.innerHTML = "";
 
@@ -127,7 +155,6 @@ function renderResults(vector, results) {
     listEl.appendChild(card);
   });
 }
-
 function escapeHtml(str) {
   const div = document.createElement('div');
   div.textContent = str;
