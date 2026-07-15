@@ -153,7 +153,7 @@ function renderResults(vector, results) {
     `;
 
     listEl.appendChild(card);
-  });
+  });  
 }
 function escapeHtml(str) {
   const div = document.createElement('div');
