@@ -1,6 +1,6 @@
 # 🎯 ReviewPulse
 
-**🔗 Live demo:** https://sinchana1234-dev.github.io/internet-mirror/  
+**🔗 Live demo:** https://sinch12345-dev.github.io/internet-mirror/  
 **⚙️ Backend API:** https://internet-mirror.vercel.app
 
 I help brands turn 1-star reviews into 5-star customer experiences automatically.
